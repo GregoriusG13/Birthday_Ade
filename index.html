@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic SPA - Ulang Tahun Ade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="initApp()">
+    <div id="loading">Loading... 💖</div>
+
+    <!-- Halaman Login -->
+    <div class="wrapper hidden" id="authPage">
+        <div class="screen animate-pop">
+            <h1>Selamat Datang!</h1>
+            <input type="text" id="nama" placeholder="Masukkan Nama">
+            <input type="date" id="tanggal">
+            <button onclick="login()">Masuk</button>
+        </div>
+    </div>
+
+    <!-- Halaman Menu -->
+    <div class="wrapper hidden" id="menuPage">
+        <div class="screen animate-pop">
+            <h1>Hai <span id="user-name"></span>!</h1>
+            <button onclick="startQuiz()">Play</button>
+        </div>
+    </div>
+
+    <!-- Halaman Quiz -->
+    <div class="wrapper hidden" id="quizPage">
+        <div class="screen animate-pop">
+            <h1 id="question"></h1>
+            <div id="answer"></div>
+        </div>
+    </div>
+
+    <!-- Halaman Birthday -->
+    <div class="wrapper hidden" id="birthdayPage">
+        <div class="screen animate-pop">
+            <h1 id="typing"></h1>
+            <p id="typing2"></p>
+            <div class="gallery">
+                <img src="assets/2.jpg" alt="Ade">
+            </div>
+            <p class="romantic-quote">"My heart is perfect because you are inside." ~ Mas Gilang</p>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="assets/HAPPY_BIRTHDAY_TO_YOU.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="sound" src="assets/dramatic.mp3"></audio>
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+
+    <script>
+    const questions = [
+        {
+            question: "Siapa nama pacar kamu?",
+            type: "text",
+            validate: (answer) => answer.trim().toLowerCase() === "gregorius gilang threesulistianto"
+        },
+        {
+            question: "Tanggal lahir pacarmu kapan?",
+            type: "text",
+            validate: (answer) => answer.trim().toLowerCase() === "13 mei 1998"
+        },
+        {
+            question: "Kenapa kamu memilih Gilang sebagai pacarmu?",
+            type: "textarea",
+            validate: (answer) => answer.trim() !== ""
+        },
+        {
+            question: "Apakah kamu mencintai Gilang sebagai mas mu?",
+            type: "multiple",
+            options: ["Yaa", "Yaaaaaaaa", "YAAAA!!!!"],
+            validate: () => true
+        },
+        {
+            question: "Apakah kamu siap setelah ini?",
+            type: "multiple",
+            options: ["Ya", "Tidak"],
+            validate: () => true
+        }
+    ];
+
+    let currentQuestion = 0;
+    let retryReady = false;
+    const questionEl = document.getElementById("question");
+    const answerEl = document.getElementById("answer");
+    const sound = document.getElementById("sound");
+    const backgroundMusic = document.getElementById("backgroundMusic");
+
+    function initApp() {
+        setTimeout(() => {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('authPage').classList.remove('hidden');
+            generateLoveRain();
+        }, 1000);
+    }
+
+    function login() {
+        const nama = document.getElementById('nama').value.trim();
+        const tanggal = document.getElementById('tanggal').value;
+        if (nama === '' || tanggal === '') {
+            alert('Isi semua data terlebih dahulu!');
+            return;
+        }
+        if (tanggal !== '2023-08-28') {
+            alert('Tanggal yang kamu masukkan salah sayang, coba lagi ya 😘');
+            return;
+        }
+        localStorage.setItem('nama', nama);
+        document.getElementById("user-name").innerText = nama;
+        showPage('menuPage');
+    }
+
+    function startQuiz() {
+        currentQuestion = 0;
+        showPage('quizPage');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        answerEl.innerHTML = "";
+        if (currentQuestion === 2) {
+            document.body.style.background = "#fff3f3";
+            setTimeout(() => {
+                questionEl.innerText = "🎉 You Almost There!!! 🎉";
+            }, 200);
+            setTimeout(() => {
+                sound.play();
+                showQuestionContent();
+            }, 3000);
+        } else {
+            showQuestionContent();
+        }
+    }
+
+    function showQuestionContent() {
+        const q = questions[currentQuestion];
+        questionEl.innerText = q.question;
+        if (q.type === "text") {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.id = "userInput";
+            answerEl.appendChild(input);
+            const btn = document.createElement("button");
+            btn.innerText = "Next";
+            btn.onclick = validateAnswer;
+            answerEl.appendChild(btn);
+        } else if (q.type === "textarea") {
+            const textarea = document.createElement("textarea");
+            textarea.id = "userInput";
+            textarea.rows = 4;
+            textarea.cols = 40;
+            answerEl.appendChild(textarea);
+            const btn = document.createElement("button");
+            btn.innerText = "Next";
+            btn.onclick = validateAnswer;
+            answerEl.appendChild(btn);
+        } else if (q.type === "multiple") {
+            q.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    if (currentQuestion === 4) {
+                        if (opt === "Tidak") {
+                            retryReady = true;
+                            validateAnswer(opt);
+                        } else {
+                            backgroundMusic.play();
+                            setTimeout(() => {
+                                showPage('birthdayPage');
+                                startTyping();
+                                startConfetti();
+                            }, 1500);
+                        }
+                    } else {
+                        validateAnswer(opt);
+                    }
+                };
+                answerEl.appendChild(btn);
+            });
+        }
+    }
+
+    function validateAnswer(selectedOption = null) {
+        const q = questions[currentQuestion];
+        let userAnswer = selectedOption;
+        if (q.type === "text" || q.type === "textarea") {
+            userAnswer = document.getElementById("userInput").value;
+        }
+        if (q.validate(userAnswer)) {
+            if (currentQuestion === 4 && retryReady) {
+                questions[4].options = ["Ya", "YA"];
+                retryReady = false;
+                loadQuestion();
+                return;
+            }
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            }
+        } else {
+            alert("Jawaban kamu masih salah nih, coba lagi yaa 💕");
+        }
+    }
+
+    function startTyping(){
+        const text1 = "Selamat Ulang Tahun Sayang! 🎉🎂";
+        const text2 = "Semoga selalu bahagia, sehat, sukses, dan selalu bersama Mas Gilang selamanya ❤️";
+        let i=0, j=0;
+        function typeTitle(){
+            if(i < text1.length){
+                document.getElementById('typing').innerHTML += text1.charAt(i);
+                i++;
+                setTimeout(typeTitle, 50);
+            } else {
+                typeSubtitle();
+            }
+        }
+        function typeSubtitle(){
+            if(j < text2.length){
+                document.getElementById('typing2').innerHTML += text2.charAt(j);
+                j++;
+                setTimeout(typeSubtitle, 50);
+            }
+        }
+        typeTitle();
+    }
+
+    function startConfetti() {
+        const jsConfetti = new JSConfetti();
+        jsConfetti.addConfetti({
+            emojis: ['🎉', '🎂', '❤️', '🎈', '🥳'],
+            confettiNumber: 100,
+        });
+        setInterval(() => jsConfetti.addConfetti({
+            emojis: ['🎉','❤️','🥳'],
+            confettiNumber: 20
+        }), 3000);
+    }
+
+    function generateLoveRain(){
+        for (let i = 0; i < 30; i++){
+            let love = document.createElement('div');
+            love.innerHTML = '❤️';
+            love.classList.add('love');
+            love.style.left = Math.random() * 100 + 'vw';
+            love.style.animationDuration = (Math.random()*3 + 3) + 's';
+            document.body.appendChild(love);
+        }
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.wrapper').forEach(page => page.classList.remove('birthday'));
+
+        document.querySelectorAll('.wrapper').forEach(page => page.classList.add('hidden'));
+        document.getElementById(pageId).classList.remove('hidden');
+        if (pageId === 'birthdayPage') {
+            document.getElementById('birthdayPage').classList.add('birthday');
+        }
+    }
+    </script>
+</body>
+</html>
