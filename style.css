@@ -1,20 +1,21 @@
-
 body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(to right, #ffe6e6, #fff0f5);
     color: #333;
+    width: 100vw;
     height: 100vh;
     overflow: hidden;
+    position: relative;
 }
 
 .wrapper {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,9 +24,7 @@ body {
 }
 
 .wrapper.birthday {
-    position: static;
-    min-height: 100vh;
-    height: auto;
+    position: fixed;
     overflow-y: auto;
 }
 
