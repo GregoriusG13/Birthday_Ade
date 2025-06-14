@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Selamat Ulang Tahun Ade!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="screen">
+        <h1>Selamat Datang!</h1>
+        <input type="text" id="nama" placeholder="Masukkan Nama">
+        <input type="date" id="tanggal">
+        <button onclick="login()">Masuk</button>
+    </div>
+
+    <script>
+        function login() {
+            const nama = document.getElementById('nama').value.trim();
+            const tanggal = document.getElementById('tanggal').value;
+            if (nama === '' || tanggal === '') {
+                alert('Isi semua data terlebih dahulu!');
+                return;
+            }
+            localStorage.setItem('nama', nama);
+            localStorage.setItem('tanggal', tanggal);
+            window.location.href = 'menu.html';
+        }
+    </script>
+</body>
+</html>

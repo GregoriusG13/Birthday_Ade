@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Selamat Ulang Tahun Ade!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="screen">
+        <h1>Hai <span id="user-name"></span>!</h1>
+        <button onclick="startQuiz()">Play</button>
+    </div>
+
+    <script>
+        document.getElementById('user-name').innerText = localStorage.getItem('nama') || 'Sayang';
+        function startQuiz() {
+            window.location.href = 'quiz.html';
+        }
+    </script>
+</body>
+</html>

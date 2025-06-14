@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun Ade!</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .btn-play {
+            background: #ff6699;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #loading {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: white;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .love {
+            position: fixed;
+            top: -10%;
+            color: pink;
+            animation: fall linear infinite;
+            font-size: 30px;
+            z-index: 0;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10%); opacity: 1;}
+            100% { transform: translateY(110vh); opacity: 0;}
+        }
+    </style>
+</head>
+<body onload="generateLoveRain()">
+    <div id="loading">Loading... 💖</div>
+    <div class="wrapper" style="display:none;">
+        <div class="screen animate-pop">
+            <h1 id="typing"></h1>
+            <p id="typing2"></p>
+            <div class="gallery">
+                <img src="assets/1.jpg" alt="Ade">
+                <img src="assets/2.jpg" alt="Ade">
+                <img src="assets/3.jpg" alt="Ade">
+            </div>
+            <button class="btn-play" onclick="playMusic()">Putar Musik 🎵</button>
+        </div>
+    </div>
+
+    <audio id="music" loop>
+        <source src="assets/HAPPY_BIRTHDAY_TO_YOU.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <script>
+        // Loading transition
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('.wrapper').style.display = 'block';
+                startTyping();
+            }, 2000);
+        }
+
+        // Typing effect
+        function startTyping(){
+            const text1 = "Selamat Ulang Tahun Theresia Ade 🎉🎂";
+            const text2 = "Semoga selalu bahagia, sehat, sukses, dan selalu bersama Gilang selamanya ❤️";
+            let i=0, j=0;
+
+            function typeTitle(){
+                if(i < text1.length){
+                    document.getElementById('typing').innerHTML += text1.charAt(i);
+                    i++;
+                    setTimeout(typeTitle, 50);
+                } else {
+                    typeSubtitle();
+                }
+            }
+
+            function typeSubtitle(){
+                if(j < text2.length){
+                    document.getElementById('typing2').innerHTML += text2.charAt(j);
+                    j++;
+                    setTimeout(typeSubtitle, 50);
+                }
+            }
+
+            typeTitle();
+        }
+
+        function playMusic() {
+            document.getElementById('music').play();
+            startConfetti();
+        }
+
+        // Confetti
+        function startConfetti() {
+            const jsConfetti = new JSConfetti();
+            jsConfetti.addConfetti({
+                emojis: ['🎉', '🎂', '❤️', '🎈', '🥳'],
+                confettiNumber: 100,
+            });
+            setInterval(() => jsConfetti.addConfetti({
+                emojis: ['🎉','❤️','🥳'],
+                confettiNumber: 20
+            }), 3000);
+        }
+
+        // Love Rain Effect
+        function generateLoveRain(){
+            for (let i = 0; i < 30; i++){
+                let love = document.createElement('div');
+                love.innerHTML = '❤️';
+                love.classList.add('love');
+                love.style.left = Math.random() * 100 + 'vw';
+                love.style.animationDuration = (Math.random()*3 + 3) + 's';
+                document.body.appendChild(love);
+            }
+        }
+    </script>
+</body>
+</html>
