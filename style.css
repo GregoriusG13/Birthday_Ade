@@ -1,3 +1,4 @@
+
 body {
     margin: 0;
     padding: 0;
@@ -21,6 +22,7 @@ body {
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
+    z-index: 2;
 }
 
 .wrapper.birthday {
@@ -122,4 +124,30 @@ img:hover {
     font-size: 1.2em;
     color: #ff3366;
     margin-top: 20px;
+}
+
+.cutscene-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    font-size: 24px;
+    margin: 50px auto;
+    width: fit-content;
+}
+#cutsceneBox {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+#cutsceneBox {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    z-index: 99;
 }
